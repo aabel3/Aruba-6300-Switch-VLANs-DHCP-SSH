@@ -1,5 +1,4 @@
 # Aruba 6300 Switch: VLANs, DHCP & SSH
-
 A hands-on networking lab that configures an **Aruba 6300 (AOS-CX) switch** with two VLANs, inter-VLAN routing and an on-switch DHCP server. Two **Ubuntu 22.04 virtual machines**, one per VLAN, receive their addressing from the switch, and end-to-end connectivity is proven with **SSH** sessions captured in **Wireshark**.
 
 ![Platform](https://img.shields.io/badge/Platform-Aruba%206300%20(AOS--CX)-orange)
@@ -11,7 +10,6 @@ A hands-on networking lab that configures an **Aruba 6300 (AOS-CX) switch** with
 ---
 
 ## 📚 Project Objectives
-
 - Design a custom IP scheme by splitting the starting reservation `172.16.0.0/16` into `/26` subnets
 - Create **VLAN 7** and **VLAN 70** on the Aruba 6300 and assign one access port to each
 - Give each VLAN a gateway (SVI) so the switch routes between them
@@ -23,26 +21,11 @@ A hands-on networking lab that configures an **Aruba 6300 (AOS-CX) switch** with
 ---
 
 ## 🗺️ Network Topology
-
 ![Network diagram](screenshots/01-network-diagram.png)
-
-```mermaid
-graph LR
-    VM7["Ubuntu VM<br/>VLAN 7<br/>172.16.7.37/26"] ---|"1/1/1 · access VLAN 7"| SW["Aruba 6300<br/>VLAN 7 SVI 172.16.7.1/26<br/>VLAN 70 SVI 172.16.70.1/26"]
-    SW ---|"1/1/2 · access VLAN 70"| VM70["Ubuntu VM<br/>VLAN 70<br/>172.16.70.9/26"]
-```
-
-| VLAN | Name   | Network         | Gateway (SVI)  | DHCP Pool                     | Switch Port |
-|------|--------|-----------------|----------------|-------------------------------|-------------|
-| 7    | VLAN7  | `172.16.7.0/26`  | `172.16.7.1`   | `172.16.7.1` – `172.16.7.62`  | `1/1/1`     |
-| 70   | VLAN70 | `172.16.70.0/26` | `172.16.70.1`  | `172.16.70.1` – `172.16.70.63`| `1/1/2`     |
-
-Addresses handed out in the final run: `172.16.7.37` (VLAN 7 VM) and `172.16.70.9` (VLAN 70 VM). See [docs/topology.md](docs/topology.md) for the full breakdown.
 
 ---
 
 ## 📂 Repository Layout
-
 ```
 Aruba-6300-Switch-VLANs-DHCP-and-SSH/
 ├── configs/
@@ -65,7 +48,6 @@ Aruba-6300-Switch-VLANs-DHCP-and-SSH/
 ---
 
 ## 🧰 Requirements
-
 - Aruba 6300 switch running AOS-CX (CLI prompt `6300#`)
 - Two Ubuntu 22.04 VMs (built in VMware Workstation), each with:
   - `ens33` – uplink to the campus network (DHCP)
@@ -194,7 +176,6 @@ default via 172.16.70.1 dev ens37 proto dhcp metric 20101
 ---
 
 ## 🔍 How It Works
-
 1. **VLANs** – Ports `1/1/1` and `1/1/2` are access ports (`no routing`, `vlan access N`), so each VM sits in its own Layer 2 broadcast domain.
 2. **Routing** – `interface vlan 7` and `interface vlan 70` are switch virtual interfaces. Their addresses (`.1`) are the default gateways, and the switch routes between the two `/26` networks.
 3. **DHCP** – The switch's DHCP server hands each VM an address, mask and `default-router` from the pool matching its VLAN. `show dhcp-server leases` lists the active leases.
@@ -205,7 +186,6 @@ default via 172.16.70.1 dev ens37 proto dhcp metric 20101
 ---
 
 ## 🖼️ Screenshots
-
 | # | Screenshot | File |
 |---|------------|------|
 | 1 | Network diagram | [01-network-diagram.png](screenshots/01-network-diagram.png) |
@@ -227,7 +207,6 @@ default via 172.16.70.1 dev ens37 proto dhcp metric 20101
 ---
 
 ## 📖 References
-
 - [ArubaOS 8.x CLI Reference Guide](https://arubanetworking.hpe.com/techdocs/ArubaOS-8.x-Books/ArubaOS-8.x-CLI-Reference-Guide.pdf)
 - [HPE Support – document a00021327en_us](https://support.hpe.com/hpesc/public/docDisplay?docId=a00021327en_us)
 - [HPE Support – document a00055715en_us](https://support.hpe.com/hpesc/public/docDisplay?docId=a00055715en_us&docLocale=en_US)
